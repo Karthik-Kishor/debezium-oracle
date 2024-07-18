@@ -1,0 +1,79 @@
+name: cdc
+
+services:
+
+  oracle:
+    image: container-registry.oracle.com/database/enterprise:latest
+    container_name: oracle
+    environment:
+      ORACLE_SID: ${SID}
+      ORACLE_PDB: ${PDB}
+      ORACLE_PWD: ${PASSWORD}
+      ORACLE_ALLOW_REMOTE: true
+      ORACLE_ENABLE_XDB: truec
+    ports:
+      - 1521:1521
+    volumes:
+      - oracle-volume:/opt/oracle/oradata
+    networks:
+      - debezium_network
+
+  connect:
+    image: debezium/connect-with-oracle-jdbc:1.9
+    container_name: connect
+    build:
+      context: .
+    ports:
+      - 8083:8083
+    links:
+      - oracle
+    environment:
+      BOOTSTRAP_SERVERS: ${EH_NAME}.servicebus.windows.net:9093
+      GROUP_ID: 1
+
+      CONFIG_STORAGE_TOPIC: config-storage-topic
+      OFFSET_STORAGE_TOPIC: offset-storage-topic
+      STATUS_STORAGE_TOPIC: status-storage-topic
+      CONNECT_REQUEST_TIMEOUT_MS: 60000
+
+      CONNECT_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_SASL_MECHANISM: PLAIN
+      CONNECT_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="${EH_CONNECTION_STRING}";
+
+      CONNECT_PRODUCER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_PRODUCER_SASL_MECHANISM: PLAIN
+      CONNECT_PRODUCER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="${EH_CONNECTION_STRING}";
+
+      CONNECT_CONSUMER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_CONSUMER_SASL_MECHANISM: PLAIN
+      CONNECT_CONSUMER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="${EH_CONNECTION_STRING}";
+
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offset-storage-topic
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-config-storage-topic
+      CONNECT_STATUS_STORAGE_TOPIC: connect-status-storage-topic
+
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      OFFSET_FLUSH_TIMEOUT_MS: 60000
+      OFFSET_FLUSH_INTERVAL_MS: 10000
+      MAX_REQUEST_SIZE: 10485760
+
+    depends_on:
+      - oracle
+    networks:
+      - debezium_network
+
+volumes:
+  oracle-volume:
+
+
+networks:
+  debezium_network:
