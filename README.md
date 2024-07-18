@@ -6,7 +6,7 @@ Change Data Capture (CDC) is a method for tracking row-level changes in database
 
 ### Architecture
 
-![Architecture Screenshot](images\architecture.png)
+![Architecture Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/architecture.png)
 
 
 ## Prerequisites
@@ -34,13 +34,13 @@ pip install -r requirements.txt
 
 3. After the Event Hub is created, navigate to **Shared access policies** under the Settings section.
 
-![Azure Screenshot](images\eventhubs-settings.jpeg)
+![Azure Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/eventhubs-settings.jpeg)
 
 4. By default, the policy used is **RootManageSharedAccessKey**. If needed, you can create a different policy. 
 
 5. Click on **RootManageSharedAccessKey** and copy either the Primary or Secondary Connection String. 
 
-![Azure Screenshot](images\policy-keys.jpeg)
+![Azure Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/policy-keys.jpeg)
 
 6. Add the Event Hubs Namespace and Connection String to the .env file in the cloned repo. (Refer Environment Variables)
 
@@ -286,11 +286,11 @@ ALTER TABLE Orders ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;
 
 2. Copy the contents of `debezium_connector.json` and send a **POST** request to **Kafka Connect** service at `http://localhost:8083/connectors/`.
 
-![Postman Screenshot](images\post-request.png)
+![Postman Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/post-request.png)
 
 3. If the above steps are done correctly, you should see the events in your Event Hubs Namespace. 
 
-![Azure Screenshot](images\events.jpeg)
+![Azure Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/events.jpeg)
 
 Note: In this scenario, `debezium_server` is the `database.server.name` specified in `debezium_connector.json`, and `customers` and `orders` are example tables in the database.
 
