@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 ![Azure Screenshot](https://github.com/Karthik-Kishor/debezium-oracle/blob/Main/images/policy-keys.jpeg)
 
-6. Add the Event Hubs Namespace and Connection String to the .env file in the cloned repo. (Refer Environment Variables)
+6. Add the Event Hubs Namespace and Connection String to the .env file in the cloned repo. [Refer Environment Variables](https://github.com/Karthik-Kishor/debezium-oracle?tab=readme-ov-file#environment-variables)
 
 
 ## Run the docker compose file
